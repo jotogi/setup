@@ -1,0 +1,1 @@
+Scripts de configuració per configuració ràpida de raspberry pi 4 en Ubuntu 24.04

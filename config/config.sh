@@ -17,3 +17,7 @@ NET_DNS_2="8.8.4.4"
 
 # ---------- NEOVIM ----------
 NVIM_ENABLE=true
+
+# ---------- DOCKER ----------
+# Set to true to install Docker Engine + docker-compose-plugin
+DOCKER_ENABLE=false

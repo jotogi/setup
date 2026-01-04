@@ -17,6 +17,17 @@ source "$SCRIPT_DIR/config/config.sh"
 source "$MODULES_DIR/netplan.sh"
 
 # ---------- NEOVIM ----------
-source "$MODULES_DIR/neovim.sh"
+if [ "${NVIM_ENABLE:-false}" = true ]; then
+	source "$MODULES_DIR/neovim.sh"
+else
+	echo "[Neovim] Saltant instal·lació (NVIM_ENABLE=false)"
+fi
+
+# ---------- DOCKER ----------
+if [ "${DOCKER_ENABLE:-false}" = true ]; then
+	source "$MODULES_DIR/docker.sh"
+else
+	echo "[Docker] Saltant instal·lació (DOCKER_ENABLE=false)"
+fi
 
 echo "✅ Setup completat correctament"

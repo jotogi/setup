@@ -1,12 +1,22 @@
 #!/bin/bash
+set -e
 
 echo "[Neovim] Iniciant mòdul..."
 
 # ---------- SNAP ----------
 if ! command -v snap >/dev/null 2>&1; then
-    echo "[Neovim] Instal·lant snapd..."
+    echo "[Neovim] snap no trobat — instal·lant snapd..."
     sudo apt update
     sudo apt install -y snapd
+    sudo systemctl enable --now snapd.socket
+    sudo ln -s /var/lib/snapd/snap /snap 2>/dev/null || true
+    # esperar que snap estigui disponible
+    for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do
+        if snap version >/dev/null 2>&1; then
+            break
+        fi
+        sleep 1
+    done
 fi
 
 if ! snap list | grep -q "^nvim"; then
@@ -17,7 +27,13 @@ else
 fi
 
 # ---------- CONFIG ----------
-NVIM_DIR="$HOME/.config/nvim"
+# Escriure la configuració en el directori de l'usuari real (si s'executa amb sudo)
+if [ -n "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
+    USER_HOME=$(eval echo "~$SUDO_USER")
+else
+    USER_HOME="$HOME"
+fi
+NVIM_DIR="$USER_HOME/.config/nvim"
 LUA_DIR="$NVIM_DIR/lua"
 
 mkdir -p "$LUA_DIR"
@@ -63,5 +79,10 @@ EOF
 [ -f "$LUA_DIR/bootstrap.lua" ] || cat << 'EOF' > "$LUA_DIR/bootstrap.lua"
 -- reservat per plugins
 EOF
+
+# Si s'ha creat/actualitzat la configuració com root, restaurar propietari a l'usuari real
+if [ -n "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
+    sudo chown -R "$SUDO_USER":"$SUDO_USER" "$NVIM_DIR" || true
+fi
 
 echo "[Neovim] Mòdul completat"

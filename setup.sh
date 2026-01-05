@@ -14,7 +14,11 @@ source "$SCRIPT_DIR/config/config.sh"
 # ---------- MÒDULS ----------
 
 # ---------- NETPLAN ---------
-source "$MODULES_DIR/netplan.sh"
+if [ "${NETPLAN_ENABLE:-false}" = true ]; then
+	source "$MODULES_DIR/netplan.sh"
+else
+	echo "[Netplan] Saltant configuració d'Ethernet (NETPLAN_ENABLE=false)"
+fi
 
 # ---------- NEOVIM ----------
 if [ "${NVIM_ENABLE:-false}" = true ]; then

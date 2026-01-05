@@ -41,6 +41,17 @@ if [ -n "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
     echo "[Docker] Added $SUDO_USER to docker group (re-login required)"
 fi
 
+# Create docker group if it doesn't exist (for non-sudo installations)
+if [ "${DOCKER_NONROOT_USER}" = true ] && ! getent group docker >/dev/null 2>&1; then
+    sudo groupadd docker
+    echo "[Docker] Created docker group"
+    sudo usermod -aG docker "$USER" || true
+    echo "[Docker] Added $USER to docker group (re-login required)"
+    newgrp docker || true
+    docker run hello-world >/dev/null 2>&1 && echo "[Docker] 'hello-world' test ran successfully as $USER" || echo "[Docker] Warning: could not run 'hello-world' as $USER (may be normal in some environments)"
+fi
+
+
 # Basic verification (do not fail the script on error here)
 if sudo docker run --rm hello-world >/dev/null 2>&1; then
     echo "[Docker] 'hello-world' test ran successfully"

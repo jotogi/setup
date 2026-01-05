@@ -11,13 +11,20 @@ MODULES_DIR="$SCRIPT_DIR/modules"
 # ---------- CONFIG ----------
 source "$SCRIPT_DIR/config/config.sh"
 
-# ---------- MÒDULS ----------
+# ---------- MODULES ----------
 
 # ---------- NETPLAN ---------
 if [ "${NETPLAN_ENABLE:-false}" = true ]; then
 	source "$MODULES_DIR/netplan.sh"
 else
 	echo "[Netplan] Skipping Ethernet configuration (NETPLAN_ENABLE=false)"
+fi
+
+# ---------- SSH ----------
+if [ "${ENABLE_SSH:-false}" = true ]; then
+	source "$MODULES_DIR/enable_ssh.sh"
+else
+	echo "[SSH] Skipping OpenSSH enable (ENABLE_SSH=false)"
 fi
 
 # ---------- NEOVIM ----------

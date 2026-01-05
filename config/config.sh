@@ -32,3 +32,7 @@ NVIM_ENABLE=false
 # ---------- DOCKER ----------
 # Set to true to install Docker Engine + docker-compose-plugin, false to avoid installation
 DOCKER_ENABLE=false
+
+# ---------- SSH ----------
+# Set to true to install and enable OpenSSH server on this machine
+ENABLE_SSH=false

@@ -1,1 +1,1 @@
-Scripts de configuració per configuració ràpida de raspberry pi 4 en Ubuntu 24.04
+Setup scripts for quick configuration of Raspberry Pi 4 on Ubuntu 24.04

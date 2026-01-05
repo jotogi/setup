@@ -1,35 +1,35 @@
 #!/bin/bash
 set -e
 
-echo "[Netplan] Iniciant configuració Ethernet..."
+echo "[Netplan] Starting Ethernet configuration..."
 
-# ---------- VALIDACIÓ DE VARIABLES ----------
-: "${NET_IFACE_NAME:?❌ NET_IFACE_NAME no definida}"
-: "${NET_STATIC_IP:?❌ NET_STATIC_IP no definida}"
-: "${NET_GATEWAY:?❌ NET_GATEWAY no definida}"
-: "${NET_DNS_1:?❌ NET_DNS_1 no definida}"
-: "${NET_DNS_2:?❌ NET_DNS_2 no definida}"
+# ---------- VARIABLE VALIDATION ----------
+: "${NET_IFACE_NAME:?❌ NET_IFACE_NAME not defined}"
+: "${NET_STATIC_IP:?❌ NET_STATIC_IP not defined}"
+: "${NET_GATEWAY:?❌ NET_GATEWAY not defined}"
+: "${NET_DNS_1:?❌ NET_DNS_1 not defined}"
+: "${NET_DNS_2:?❌ NET_DNS_2 not defined}"
 
-# Validació bàsica de format IP/CIDR
+# Basic IP/CIDR format validation
 if [[ ! "$NET_STATIC_IP" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}/[0-9]{1,2}$ ]]; then
-    echo "❌ NET_STATIC_IP no té format IP/CIDR (ex: 192.168.1.26/24)"
-    exit 1
+  echo "❌ NET_STATIC_IP does not have IP/CIDR format (e.g. 192.168.1.26/24)"
+  exit 1
 fi
 
-echo "[Netplan] Variables validades correctament"
+echo "[Netplan] Variables validated successfully"
 
-# ---------- DETECTAR INTERFÍCIE FÍSICA ----------
+# ---------- DETECT PHYSICAL INTERFACE ----------
 ETH_IFACE=$(ip -o link show | awk -F': ' '{print $2}' | grep -E '^eth|^en' | head -n 1)
 
 if [ -z "$ETH_IFACE" ]; then
-    echo "❌ No s'ha detectat cap interfície ethernet"
+    echo "❌ No ethernet interface detected"
     exit 1
 fi
 
 MAC_ADDR=$(cat /sys/class/net/$ETH_IFACE/address)
 
-echo "[Netplan] Interfície detectada: $ETH_IFACE"
-echo "[Netplan] MAC detectada: $MAC_ADDR"
+echo "[Netplan] Detected interface: $ETH_IFACE"
+echo "[Netplan] Detected MAC: $MAC_ADDR"
 
 # ---------- ESCRIURE NETPLAN ----------
 NETPLAN_FILE="/etc/netplan/01-ethernet-static.yaml"
@@ -53,7 +53,7 @@ network:
           - $NET_DNS_2
 EOF
 
-echo "[Netplan] Aplicant configuració..."
+echo "[Netplan] Applying configuration..."
 sudo netplan apply
 
-echo "[Netplan] ✅ Xarxa configurada correctament"
+echo "[Netplan] ✅ Network configured successfully"

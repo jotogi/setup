@@ -2,7 +2,7 @@
 set -e
 
 echo "=============================="
-echo "  SETUP UBUNTU RASPBERRY PI 4 "
+echo "  UBUNTU RASPBERRY PI 4 SETUP "
 echo "=============================="
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -30,4 +30,4 @@ else
 	echo "[Docker] Saltant instal·lació (DOCKER_ENABLE=false)"
 fi
 
-echo "✅ Setup completat correctament"
+echo "✅ Setup completed successfully"

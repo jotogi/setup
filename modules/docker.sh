@@ -1,20 +1,20 @@
 #!/bin/bash
 set -e
 
-echo "[Docker] Iniciant instal·lació..."
+echo "[Docker] Starting installation..."
 
-# Arquitectura
+# Architecture
 ARCH=$(dpkg --print-architecture || true)
-echo "[Docker] Arquitectura detectada: ${ARCH:-unknown}"
+echo "[Docker] Detected architecture: ${ARCH:-unknown}"
 
-# Eliminar paquets conflictius (no fallar si no existeixen)
+# Remove conflicting packages (do not fail if they don't exist)
 sudo apt remove -y docker.io docker-compose docker-compose-v2 docker-doc podman-docker containerd runc || true
 
-# Instal·lar prerequisits
+# Install prerequisites
 sudo apt update
 sudo apt install -y ca-certificates curl gnupg lsb-release
 
-# Configurar keyring i repositori Docker (segons docs oficials)
+# Configure Docker keyring and APT repository (per official docs)
 sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
@@ -29,23 +29,23 @@ EOF
 
 sudo apt update
 
-# Instal·lar Docker Engine i plugins recomanats
+# Install Docker Engine and recommended plugins
 sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-# Assegurar servei actiu
+# Ensure service is enabled and running
 sudo systemctl enable --now docker
 
-# Afegir usuari no-root al grup docker si s'executa amb sudo
+# Add non-root user to docker group if running via sudo
 if [ -n "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
     sudo usermod -aG docker "$SUDO_USER" || true
-    echo "[Docker] Afegit $SUDO_USER al grup docker (re-login per aplicar)"
+    echo "[Docker] Added $SUDO_USER to docker group (re-login required)"
 fi
 
-# Verificació bàsica (no fallar el script en cas d'error aquí)
+# Basic verification (do not fail the script on error here)
 if sudo docker run --rm hello-world >/dev/null 2>&1; then
-    echo "[Docker] Prova 'hello-world' executada correctament"
+    echo "[Docker] 'hello-world' test ran successfully"
 else
-    echo "[Docker] Avis: no s'ha pogut executar 'hello-world' (pot ser normal en alguns entorns)"
+    echo "[Docker] Warning: could not run 'hello-world' (may be normal in some environments)"
 fi
 
-echo "[Docker] Instal·lació completada"
+echo "[Docker] Installation completed"

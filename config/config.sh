@@ -11,6 +11,10 @@ NET_GATEWAY="192.168.1.1"
 NET_DNS_1="8.8.8.8"
 NET_DNS_2="8.8.4.4"
 
+# Netplan output file
+# Change this if you prefer a different filename/path
+NETPLAN_FILE="/etc/netplan/01-ethernet-static.yaml"
+
 # ---------- SYSTEM ----------
 # TIMEZONE="Europe/Madrid"
 # LOCALE="ca_ES.UTF-8"

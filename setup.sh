@@ -17,21 +17,21 @@ source "$SCRIPT_DIR/config/config.sh"
 if [ "${NETPLAN_ENABLE:-false}" = true ]; then
 	source "$MODULES_DIR/netplan.sh"
 else
-	echo "[Netplan] Saltant configuració d'Ethernet (NETPLAN_ENABLE=false)"
+	echo "[Netplan] Skipping Ethernet configuration (NETPLAN_ENABLE=false)"
 fi
 
 # ---------- NEOVIM ----------
 if [ "${NVIM_ENABLE:-false}" = true ]; then
 	source "$MODULES_DIR/neovim.sh"
 else
-	echo "[Neovim] Saltant instal·lació (NVIM_ENABLE=false)"
+	echo "[Neovim] Skipping installation (NVIM_ENABLE=false)"
 fi
 
 # ---------- DOCKER ----------
 if [ "${DOCKER_ENABLE:-false}" = true ]; then
 	source "$MODULES_DIR/docker.sh"
 else
-	echo "[Docker] Saltant instal·lació (DOCKER_ENABLE=false)"
+	echo "[Docker] Skipping installation (DOCKER_ENABLE=false)"
 fi
 
 echo "✅ Setup completed successfully"

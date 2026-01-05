@@ -9,6 +9,7 @@ echo "[Netplan] Starting Ethernet configuration..."
 : "${NET_GATEWAY:?❌ NET_GATEWAY not defined}"
 : "${NET_DNS_1:?❌ NET_DNS_1 not defined}"
 : "${NET_DNS_2:?❌ NET_DNS_2 not defined}"
+: "${NETPLAN_FILE:?❌ NETPLAN_FILE not defined (set in config/config.sh)}"
 
 # Basic IP/CIDR format validation
 if [[ ! "$NET_STATIC_IP" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}/[0-9]{1,2}$ ]]; then
@@ -31,9 +32,7 @@ MAC_ADDR=$(cat /sys/class/net/$ETH_IFACE/address)
 echo "[Netplan] Detected interface: $ETH_IFACE"
 echo "[Netplan] Detected MAC: $MAC_ADDR"
 
-# ---------- ESCRIURE NETPLAN ----------
-NETPLAN_FILE="/etc/netplan/01-ethernet-static.yaml"
-
+# ---------- WRITE NETPLAN ----------
 sudo tee "$NETPLAN_FILE" > /dev/null << EOF
 network:
   version: 2
@@ -46,12 +45,19 @@ network:
       dhcp4: no
       addresses:
         - $NET_STATIC_IP
-      gateway4: $NET_GATEWAY
+      routes:
+        - to: 0.0.0.0/0
+          via: $NET_GATEWAY
       nameservers:
         addresses:
           - $NET_DNS_1
           - $NET_DNS_2
 EOF
+
+# Ensure the netplan file is owned by root and only readable/writable by root
+sudo chown root:root "$NETPLAN_FILE"
+sudo chmod 600 "$NETPLAN_FILE"
+echo "[Netplan] Set $NETPLAN_FILE owner to root and permissions to 600"
 
 echo "[Netplan] Applying configuration..."
 sudo netplan apply
